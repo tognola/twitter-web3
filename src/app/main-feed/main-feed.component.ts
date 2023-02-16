@@ -8,10 +8,10 @@ import { TweetService } from '../share/tweetservice/tweet.service';
   styleUrls: ['./main-feed.component.scss']
 })
 export class MainFeedComponent {
-    public tweets : Tweet[] = [];
-    
-    constructor(private tweetService: TweetService){
-        this.tweets = tweetService.getTweets();
-    }
+  public tweets: Tweet[] = [];
+
+  constructor(private tweetService: TweetService) {
+    this.tweets = this.tweetService.getTweets();
+  }
 
 }
