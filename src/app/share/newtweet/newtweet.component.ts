@@ -1,9 +1,9 @@
-import {Component, ElementRef, ViewChild} from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {TweetService} from "../tweetservice/tweet.service";
-import {Tweet} from "../model/tweet";
-import {UserService} from "../tweetservice/user.service";
-import {User} from "../model/user";
+import { Component, ElementRef, ViewChild } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { TweetService } from "../tweetservice/tweet.service";
+import { Tweet } from "../model/tweet";
+import { UserService } from "../tweetservice/user.service";
+import { User } from "../model/user";
 
 declare let window: any;
 
@@ -42,16 +42,17 @@ export class NewTweetComponent {
     }
 
     public submit() {
-        if(this.form.valid) {
+        if (this.form.valid) {
             let tweetcontent = this.form.get('tweetcontent')?.value;
             let tweet = new Tweet();
             tweet.message = tweetcontent;
-            if(this.image != null) {
+            if (this.image != null) {
                 const reader = new window.FileReader();
                 reader.readAsArrayBuffer(this.image);
                 reader.onloadend = () => {
                     window.Buffer = require('buffer/').Buffer;
                     tweet.imageBuffer = window.Buffer(reader.result);
+                    console.log('twitte')
                     this.tweetService.publishTweet(tweet);
                 }
             }
@@ -65,6 +66,7 @@ export class NewTweetComponent {
     public onFileSelected(event: any) {
 
         this.image = event.target.files[0];
+        console.log(this.image)
 
     }
 

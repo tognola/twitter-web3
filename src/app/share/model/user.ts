@@ -1,4 +1,4 @@
-import {Tweet} from "./tweet";
+import { Tweet } from "./tweet";
 
 
 export class User {
@@ -33,7 +33,7 @@ export class User {
         return this._bio;
     }
 
-    protected _address: string|null = null;
+    protected _address: string | null = null;
 
     set address(value: any) {
         this._address = value;

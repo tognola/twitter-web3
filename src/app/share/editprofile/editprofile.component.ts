@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { UserService } from '../tweetservice/user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+declare let window: any;
 
 @Component({
   selector: 'app-editprofile',
@@ -10,8 +11,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class EditprofileComponent {
   user$ = this.userService.userInSessionChanged$;
   public form: FormGroup;
-
+  avatar = null;
   @Output() close = new EventEmitter();
+  @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor(
     private userService: UserService,
@@ -21,7 +23,8 @@ export class EditprofileComponent {
       name: [null, [
         Validators.max(140)]],
       bio: [null, [
-        Validators.max(140)]],
+        Validators.max(140)]]
+
     });
 
     this.user$.subscribe(user => {
@@ -39,9 +42,26 @@ export class EditprofileComponent {
       let user = this.userService.getUserInSession();
       user.name = name;
       user.bio = bio;
-      this.userService.updateUser(user);
-      this.close.emit();
+      if (this.avatar != null) {
+        const reader = new window.FileReader();
+        reader.readAsArrayBuffer(this.avatar);
+        reader.onloadend = () => {
+          window.Buffer = require('buffer/').Buffer;
+          user.avatar = new window.Buffer(reader.result);
+          this.userService.updateUser(user);
+          this.close.emit();
+        }
+      } else {
+        this.userService.updateUser(user);
+        this.close.emit();
+      }
     }
+  }
+
+  public onFileSelected(event: any) {
+
+    this.avatar = event.target.files[0];
+
   }
 
   public cancel() {

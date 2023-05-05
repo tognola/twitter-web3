@@ -1,5 +1,6 @@
-import {ApplicationRef, Component} from '@angular/core';
-import {Web3Service} from "./share/web3service/web3.service";
+import { ApplicationRef, Component } from '@angular/core';
+import { Web3Service } from "./share/web3service/web3.service";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -10,9 +11,10 @@ export class AppComponent {
   title = 'twitter-web3';
 
   public isWalletConnected: boolean = false;
-
+  id!: string;
   public constructor(protected web3Service: Web3Service,
-                     protected applicationRef: ApplicationRef) {
+    protected applicationRef: ApplicationRef,
+    private router: Router) {
 
     this.web3Service.status$.subscribe((status: boolean) => {
       this.isWalletConnected = status;
@@ -22,8 +24,19 @@ export class AppComponent {
   }
 
   public connectWallet() {
-    this.web3Service.connectWallet();
+    this.web3Service.connectWallet()
+    this.web3Service.getUserInSession().then(
+      (user) => {
+        this.id = user.owner;
+      }
+    )
 
+
+  }
+
+  public goToProfile() {
+
+    this.router.navigate(['/profile/' + this.web3Service.getUserInSession()])
   }
 
 }

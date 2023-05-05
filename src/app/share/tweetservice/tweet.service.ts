@@ -1,9 +1,9 @@
-import {Injectable} from "@angular/core";
-import {Tweet} from "../model/tweet";
-import {Subject} from "rxjs";
-import {UserService} from "./user.service";
-import {User} from "../model/user";
-import {Web3Service} from "../web3service/web3.service";
+import { Injectable } from "@angular/core";
+import { Tweet } from "../model/tweet";
+import { Subject } from "rxjs";
+import { UserService } from "./user.service";
+import { User } from "../model/user";
+import { Web3Service } from "../web3service/web3.service";
 
 @Injectable()
 export class TweetService {
@@ -13,7 +13,7 @@ export class TweetService {
     protected tweets: any[] = [];
 
     public constructor(protected userService: UserService,
-                       protected web3Service: Web3Service) {
+        protected web3Service: Web3Service) {
 
         this.web3Service.newTweet$.subscribe(async () => {
             this.newTweets$.next(true);
@@ -30,7 +30,7 @@ export class TweetService {
 
         let returnValue: Tweet[] = [];
         let tweets = await this.web3Service.getAllTweets();
-        tweets.forEach( async (tweetData: any) => {
+        tweets.forEach(async (tweetData: any) => {
             let tweet = new Tweet();
             tweet.message = tweetData.tweetText;
             tweet.image = tweetData.tweetImage;
@@ -38,6 +38,7 @@ export class TweetService {
             let authorAddress = tweetData.author;
             let user = await this.userService.getUser(authorAddress);
             tweet.author = user;
+            tweet.author.address = authorAddress;
             returnValue.push(tweet);
         });
         return returnValue;

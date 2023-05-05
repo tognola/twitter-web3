@@ -10,7 +10,7 @@ import { User } from "../model/user";
 //declare window variable
 declare let window: any;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class Web3Service {
 
     protected infuraProjectId = "2MQhBSXzN9jeVnjfQ7geHJOlhdP";
@@ -83,6 +83,7 @@ export class Web3Service {
         }
 
         let gas = await this.contractInstance.methods.updateUser(user.name, user.bio, user.avatar).estimateGas({ from: this.account });
+
         let gasPrice = await this.web3.eth.getGasPrice();
 
         let encodedABI = this.contractInstance.methods.updateUser(user.name, user.bio, user.avatar).encodeABI();
@@ -101,7 +102,6 @@ export class Web3Service {
     }
 
     protected async sendTransaction(tx: any) {
-
         try {
             const transactionHash = await window.ethereum.request({
                 method: 'eth_sendTransaction',
@@ -122,6 +122,9 @@ export class Web3Service {
     }
 
     public async getUserInSession() {
+        if (!this.account) {
+            this.account = localStorage.getItem('account') ?? "";
+        }
         return await this.getUser(this.account);
     }
 
@@ -131,8 +134,8 @@ export class Web3Service {
             //upload to IPFS
             const file = await this.ipfsClient.add(tweet.imageBuffer);
             tweet.image = file.path;
-        }
 
+        }
         let gas = await this.contractInstance.methods.addTweet(tweet.message, tweet.image).estimateGas({ from: this.account });
         let gasPrice = await this.web3.eth.getGasPrice();
 
@@ -157,7 +160,7 @@ export class Web3Service {
         else {
             let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             this.account = accounts[0];
-            console.log(this.account);
+            localStorage.setItem('account', this.account);
             this.status$.next(true);
         }
     }
