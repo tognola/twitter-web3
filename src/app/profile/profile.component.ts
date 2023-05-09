@@ -5,6 +5,8 @@ import { User } from '../share/model/user';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Web3Service } from '../share/web3service/web3.service';
 import { from, of } from 'rxjs';
+import { Tweet } from '../share/model/tweet';
+import { TweetService } from '../share/tweetservice/tweet.service';
 
 @Component({
   selector: 'app-profile',
@@ -16,9 +18,11 @@ export class ProfileComponent {
   user$;
   showEditProfile = false;
   sameUser = false;
+  tweets: Tweet[] = [];
   constructor(
     private userService: UserService,
     protected web3Service: Web3Service,
+    private twitterService: TweetService,
     private router: Router
   ) {
 
@@ -26,8 +30,9 @@ export class ProfileComponent {
 
     if (id != null) {
       this.user$ = from(this.userService.getUser(id))
-
-
+      this.twitterService.getTweetsByUser(id).then((tweets: Tweet[]) => {
+        this.tweets = tweets;
+      })
     }
     this.web3Service.getUserInSession().then(
       (user) => {

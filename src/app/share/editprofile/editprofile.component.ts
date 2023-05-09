@@ -47,7 +47,7 @@ export class EditprofileComponent {
         reader.readAsArrayBuffer(this.avatar);
         reader.onloadend = () => {
           window.Buffer = require('buffer/').Buffer;
-          user.avatar = new window.Buffer(reader.result);
+          user.avatarBuffer = new window.Buffer(reader.result)
           this.userService.updateUser(user);
           this.close.emit();
         }

@@ -82,22 +82,28 @@ export class Web3Service {
             user.avatar = file.path;
         }
 
-        let gas = await this.contractInstance.methods.updateUser(user.name, user.bio, user.avatar).estimateGas({ from: this.account });
+        try {
+            let gas = await this.contractInstance.methods.updateUser(user.name, user.bio, user.avatar).estimateGas({ from: this.account });
 
-        let gasPrice = await this.web3.eth.getGasPrice();
+            let gasPrice = await this.web3.eth.getGasPrice();
 
-        let encodedABI = this.contractInstance.methods.updateUser(user.name, user.bio, user.avatar).encodeABI();
+            let encodedABI = this.contractInstance.methods.updateUser(user.name, user.bio, user.avatar).encodeABI();
 
-        console.log(this.contractAddress)
-        let tx: any = {
-            to: this.contractAddress,
-            from: this.account,
-            gas: this.web3.utils.toHex(gas),
-            gasPrice: this.web3.utils.toHex(gasPrice),
-            data: encodedABI,
-        };
+            console.log(this.contractAddress)
+            let tx: any = {
+                to: this.contractAddress,
+                from: this.account,
+                gas: this.web3.utils.toHex(gas),
+                gasPrice: this.web3.utils.toHex(gasPrice),
+                data: encodedABI,
+            };
 
-        await this.sendTransaction(tx);
+
+            await this.sendTransaction(tx);
+        } catch (error) {
+            console.error(error);
+        }
+
 
     }
 
@@ -134,8 +140,9 @@ export class Web3Service {
             //upload to IPFS
             const file = await this.ipfsClient.add(tweet.imageBuffer);
             tweet.image = file.path;
-
         }
+
+        console.log(this.contractAddress, tweet.image)
         let gas = await this.contractInstance.methods.addTweet(tweet.message, tweet.image).estimateGas({ from: this.account });
         let gasPrice = await this.web3.eth.getGasPrice();
 

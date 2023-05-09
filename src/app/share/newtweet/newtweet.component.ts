@@ -52,7 +52,6 @@ export class NewTweetComponent {
                 reader.onloadend = () => {
                     window.Buffer = require('buffer/').Buffer;
                     tweet.imageBuffer = window.Buffer(reader.result);
-                    console.log('twitte')
                     this.tweetService.publishTweet(tweet);
                 }
             }

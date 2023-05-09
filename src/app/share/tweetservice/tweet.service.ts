@@ -45,4 +45,23 @@ export class TweetService {
 
     }
 
+    public async getTweetsByUser(address: string): Promise<Tweet[]> {
+
+        let returnValue: Tweet[] = [];
+        let tweets = await this.web3Service.getAllTweets();
+        tweets.filter((t: any) => t.author == address).forEach(async (tweetData: any) => {
+            let tweet = new Tweet();
+            tweet.message = tweetData.tweetText;
+            tweet.image = tweetData.tweetImage;
+            tweet.date = new Date(tweetData.date * 1000);
+            let authorAddress = tweetData.author;
+            let user = await this.userService.getUser(authorAddress);
+            tweet.author = user;
+            tweet.author.address = authorAddress;
+            returnValue.push(tweet);
+        });
+        return returnValue
+
+    }
+
 }
