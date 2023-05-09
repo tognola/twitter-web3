@@ -62,11 +62,19 @@ export class NewTweetComponent {
         }
     }
 
+    imageURL: any;
     public onFileSelected(event: any) {
 
         this.image = event.target.files[0];
-        console.log(this.image)
+        this.showImage(this.image);
+    }
 
+    showImage(file: File) {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+            this.imageURL = e.target.result;
+        };
+        reader.readAsDataURL(file);
     }
 
 }

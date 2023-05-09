@@ -1,6 +1,7 @@
 import { ApplicationRef, Component } from '@angular/core';
 import { Web3Service } from "./share/web3service/web3.service";
 import { Router } from '@angular/router';
+import { User } from './share/model/user';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,7 @@ export class AppComponent {
 
   public isWalletConnected: boolean = false;
   id!: string;
+  user!: User;
   public constructor(protected web3Service: Web3Service,
     protected applicationRef: ApplicationRef,
     private router: Router) {
@@ -28,6 +30,7 @@ export class AppComponent {
     this.web3Service.getUserInSession().then(
       (user) => {
         this.id = user.owner;
+        this.user = user;
       }
     )
 
